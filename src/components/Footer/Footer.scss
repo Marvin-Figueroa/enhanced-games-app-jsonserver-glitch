@@ -1,0 +1,17 @@
+@import "../../variables";
+
+.footer {
+  text-align: center;
+  align-self: center;
+  padding: 1rem 0;
+  align-self: flex-end;
+}
+
+.footer__copyright {
+  color: white;
+  font-weight: bold;
+}
+
+.footer__author {
+  color: $accent-color;
+}

@@ -1,0 +1,8 @@
+.games-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(25rem, 1fr));
+
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+  width: 100%;
+}
