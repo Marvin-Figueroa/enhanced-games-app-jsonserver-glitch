@@ -1,21 +1,24 @@
-import GameCard from "../GameCard/GameCard";
-import "./GameCardsGrid.scss";
+import GameCard from '../GameCard/GameCard';
+import './GameCardsGrid.scss';
+import PropTypes, { object } from 'prop-types';
 
 const GameCardsGrid = ({ games, handleGameSelect }) => {
   return (
-    <section className="games-container">
+    <section className='games-container'>
       {games.map((game) => (
         <GameCard
           key={game.id}
-          id={game.id}
-          name={game.name}
-          rating={game.rating}
-          image={game.image}
+          game={game}
           handleGameSelect={handleGameSelect}
         />
       ))}
     </section>
   );
+};
+
+GameCardsGrid.propTypes = {
+  games: PropTypes.arrayOf(object).isRequired,
+  handleGameSelect: PropTypes.func.isRequired,
 };
 
 export default GameCardsGrid;
