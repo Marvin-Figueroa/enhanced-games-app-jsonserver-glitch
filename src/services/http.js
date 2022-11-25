@@ -1,18 +1,16 @@
 export default class HttpClient {
   static #instance;
-  #baseURL = "";
 
-  constructor(baseURL) {
+  constructor() {
     if (HttpClient.#instance) {
       return HttpClient.#instance;
     }
 
     HttpClient.#instance = this;
-    this.#baseURL = baseURL;
   }
 
   async #fetchJSON(endpoint, options = {}) {
-    const res = await fetch(this.#baseURL + endpoint, { ...options });
+    const res = await fetch(endpoint, { ...options });
 
     if (!res.ok) {
       throw new Error(res.statusText);
@@ -29,7 +27,7 @@ export default class HttpClient {
     return this.#fetchJSON(endpoint, {
       parseResponse: true,
       ...options,
-      method: "GET",
+      method: 'GET',
     });
   }
 
@@ -37,9 +35,9 @@ export default class HttpClient {
     return this.#fetchJSON(endpoint, {
       ...options,
       body: JSON.stringify(body),
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     });
   }
@@ -47,7 +45,7 @@ export default class HttpClient {
   delete(endpoint, options = {}) {
     return this.#fetchJSON(endpoint, {
       ...options,
-      method: "DELETE",
+      method: 'DELETE',
     });
   }
 
@@ -55,9 +53,9 @@ export default class HttpClient {
     return this.#fetchJSON(endpoint, {
       ...options,
       body: JSON.stringify(body),
-      method: "PATCH",
+      method: 'PATCH',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     });
   }
