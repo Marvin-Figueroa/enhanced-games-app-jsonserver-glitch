@@ -1,8 +1,8 @@
-import "./About.scss";
+import './About.scss';
 
 const About = () => {
   return (
-    <p className="about-text">
+    <p className='about-text'>
       Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nisi, aperiam.
       Temporibus suscipit qui enim aliquam! Autem eveniet numquam nostrum!
       Accusamus ad officia eos sed aliquam dicta molestiae maiores iure magni
