@@ -1,3 +1,4 @@
+import React from 'react';
 import './Comment.scss';
 import PropTypes from 'prop-types';
 
@@ -14,4 +15,8 @@ Comment.propTypes = {
   comment: PropTypes.object.isRequired,
 };
 
-export default Comment;
+export default React.memo(
+  Comment,
+  (prevProps, nextProps) =>
+    JSON.stringify(prevProps.comment) === JSON.stringify(nextProps.comment)
+);
