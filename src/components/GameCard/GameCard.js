@@ -1,18 +1,22 @@
+import React from 'react';
 import './GameCard.scss';
-import GameRating from '../GameRating/GameRating';
 import PropTypes from 'prop-types';
+
+import GameRating from '../GameRating/GameRating';
 
 const GameCard = ({ game, handleGameSelect }) => {
   return (
     <article className='game-card'>
       <div className='game-card__image-container'>
-        <img src={game.background_image} alt='' className='game-card__image' />
+        <img src={game?.background_image} alt='' className='game-card__image' />
       </div>
       <div className='game-card__text'>
         <h2 className='game-card__title'>
-          <button onClick={() => handleGameSelect(game.id)}>{game.name}</button>
+          <button onClick={() => handleGameSelect(game?.id)}>
+            {game?.name}
+          </button>
         </h2>
-        <GameRating rating={game.rating} maxRating={5.0} />
+        <GameRating rating={game?.rating} maxRating={5.0} />
       </div>
     </article>
   );
@@ -20,12 +24,16 @@ const GameCard = ({ game, handleGameSelect }) => {
 
 GameCard.propTypes = {
   game: PropTypes.shape({
-    background_image: PropTypes.string.isRequired,
+    background_image: PropTypes.string,
     id: PropTypes.number.isRequired,
-    rating: PropTypes.number.isRequired,
+    rating: PropTypes.number,
     name: PropTypes.string.isRequired,
   }),
   handleGameSelect: PropTypes.func.isRequired,
 };
 
-export default GameCard;
+export default React.memo(
+  GameCard,
+  (prevProps, nextProps) =>
+    JSON.stringify(prevProps.game) === JSON.stringify(nextProps.game)
+);
