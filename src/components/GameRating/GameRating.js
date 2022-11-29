@@ -1,8 +1,9 @@
+import React from 'react';
 import { AiFillStar } from 'react-icons/ai';
 import './GameRating.scss';
 import PropTypes from 'prop-types';
 
-const Rating = ({ rating, maxRating = 5 }) => {
+const Rating = ({ rating = 0, maxRating = 5 }) => {
   return (
     <div className='rating'>
       <AiFillStar />
@@ -14,8 +15,8 @@ const Rating = ({ rating, maxRating = 5 }) => {
 };
 
 Rating.propTypes = {
-  rating: PropTypes.number.isRequired,
+  rating: PropTypes.number,
   maxRating: PropTypes.number,
 };
 
-export default Rating;
+export default React.memo(Rating);
