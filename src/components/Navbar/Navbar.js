@@ -2,43 +2,48 @@ import React from 'react';
 import './Navbar.scss';
 import { SiNintendogamecube } from 'react-icons/si';
 import PropTypes from 'prop-types';
+import { useAuth } from '../../hooks/useAuthv2';
 
-const Navbar = ({ currentPage, loggedInUser, onSignOut, handleClick }) => {
+const Navbar = ({ currentPage, onSignOut, handleClick }) => {
+  const { user } = useAuth();
   return (
-    <nav className='main-nav'>
-      <div onClick={() => handleClick('games')} className='main-nav__logo'>
+    <nav className="main-nav">
+      <div onClick={() => handleClick('games')} className="main-nav__logo">
         <SiNintendogamecube /> <span>LOGO</span>
       </div>
-      <ul className='main-nav__list'>
-        <li className='main-nav__item'>
+      <ul className="main-nav__list">
+        <li className="main-nav__item">
           <button
             onClick={() => handleClick('games')}
             className={
               currentPage === 'games'
                 ? 'main-nav__link current'
                 : 'main-nav__link'
-            }>
+            }
+          >
             Games
           </button>
         </li>
-        <li className='main-nav__item'>
+        <li className="main-nav__item">
           <button
             onClick={() => handleClick('about')}
             className={
               currentPage === 'about'
                 ? 'main-nav__link current'
                 : 'main-nav__link'
-            }>
+            }
+          >
             About
           </button>
         </li>
-        <li className='main-nav__item'>
-          {loggedInUser ? (
+        <li className="main-nav__item">
+          {user ? (
             <>
-              <span className='main-nav__user'>({loggedInUser.username})</span>
+              <span className="main-nav__user">({user.username})</span>
               <button
-                className='main-nav__link'
-                onClick={() => onSignOut(loggedInUser)}>
+                className="main-nav__link"
+                onClick={() => onSignOut(user)}
+              >
                 Log Out
               </button>
             </>
@@ -49,7 +54,8 @@ const Navbar = ({ currentPage, loggedInUser, onSignOut, handleClick }) => {
                   ? 'main-nav__link current'
                   : 'main-nav__link'
               }
-              onClick={() => handleClick('login')}>
+              onClick={() => handleClick('login')}
+            >
               Log In
             </button>
           )}
@@ -62,13 +68,7 @@ const Navbar = ({ currentPage, loggedInUser, onSignOut, handleClick }) => {
 Navbar.propTypes = {
   currentPage: PropTypes.string.isRequired,
   handleClick: PropTypes.func.isRequired,
-  loggedInUser: PropTypes.object,
   onSignOut: PropTypes.func.isRequired,
 };
 
-export default React.memo(
-  Navbar,
-  (prevProps, nextProps) =>
-    JSON.stringify(prevProps.loggedInUser) ===
-    JSON.stringify(nextProps.loggedInUser)
-);
+export default Navbar;

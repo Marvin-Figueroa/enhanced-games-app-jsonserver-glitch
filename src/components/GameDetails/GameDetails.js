@@ -9,10 +9,12 @@ import React, { useEffect, useState } from 'react';
 import { getGameDetails } from '../../services/games';
 
 import HashLoader from 'react-spinners/HashLoader';
+import { useAuth } from '../../hooks/useAuthv2';
 
-const GameDetails = ({ gameId, user }) => {
+const GameDetails = ({ gameId }) => {
   const [game, setGame] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const { user } = useAuth();
 
   useEffect(() => {
     setIsLoading(true);
@@ -23,23 +25,23 @@ const GameDetails = ({ gameId, user }) => {
   }, []);
 
   if (isLoading) {
-    return <HashLoader color='#fb8500' />;
+    return <HashLoader color="#fb8500" />;
   }
 
   return (
-    <article className='game'>
-      <img src={game?.background_image} alt='' className='game__image' />
-      <div className='game__info'>
-        <h2 className='game__title'>{game?.name}</h2>
-        <span className='game_date'>{game?.released}</span>
-        <span className='game__rating'>
+    <article className="game">
+      <img src={game?.background_image} alt="" className="game__image" />
+      <div className="game__info">
+        <h2 className="game__title">{game?.name}</h2>
+        <span className="game_date">{game?.released}</span>
+        <span className="game__rating">
           <GameRating rating={game?.rating} maxRating={5.0} />
         </span>
         <div>
           <h3>Platforms</h3>
           <p>{game?.platforms?.map((p) => p.platform.name).join(', ')}</p>
         </div>
-        <p className='game__description'>
+        <p className="game__description">
           {game?.description_raw || 'NO HAY DESCRIPCION'}
         </p>
       </div>

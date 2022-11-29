@@ -12,9 +12,8 @@ import Login from './components/Login/Login';
 import SearchBar from './components/SearchBar/SearchBar';
 
 import HashLoader from 'react-spinners/HashLoader';
-
-import loginService from './services/login';
 import { getPaginatedGames } from './services/games';
+import { useAuth } from './hooks/useAuthv2';
 
 function App() {
   const [games, setGames] = useState([]);
@@ -23,53 +22,32 @@ function App() {
   const [currentPage, setCurrentPage] = useState('games');
   const [selectedGame, setSelectedGame] = useState(null);
   const [currentGamesPage, setCurrentGamesPage] = useState(1);
-  const [user, setUser] = useState(null);
   const [gameSearch, setGameSearch] = useState('');
+  const [error, setError] = useState(null);
+
+  const { login, user, logOut } = useAuth();
 
   useEffect(() => {
     setLoading(true);
-    getPaginatedGames().then((data) => {
-      setGamesCount(data.count);
-      setGames(data.results);
-      setLoading(false);
-      setUser(JSON.parse(window.localStorage.getItem('user')));
-    });
+    getPaginatedGames()
+      .then((data) => {
+        setGamesCount(data.count);
+        setGames(data.results);
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
+        setError('something went wrong');
+      });
   }, []);
 
-  useEffect(() => {
-    setLoading(true);
-    getPaginatedGames(currentGamesPage, 8, gameSearch).then((data) => {
-      setGamesCount(data.count);
-      setGames(data.results);
-      setLoading(false);
-    });
-  }, [currentGamesPage]);
-
-  useEffect(() => {
-    getPaginatedGames(1, 8, gameSearch).then((data) => {
-      setGamesCount(data.count);
-      setGames(data.results);
-    });
-  }, [gameSearch]);
-
   async function handleLogin(credentials) {
-    try {
-      const user = await loginService.login(credentials);
-
+    login(credentials).then((user) => {
       if (user) {
-        setUser(user);
-        window.localStorage.setItem('user', JSON.stringify(user));
         setCurrentPage('games');
       }
-    } catch (error) {
-      // console.log(error);
-    }
+    });
   }
-
-  const handleLogout = useCallback(() => {
-    setUser(null);
-    window.localStorage.removeItem('user');
-  }, [setUser]);
 
   const handleClick = useCallback(
     (currentPage) => {
@@ -89,6 +67,12 @@ function App() {
 
   const handlePageChange = useCallback(
     (page) => {
+      setLoading(true);
+      getPaginatedGames(page, 8, gameSearch).then((data) => {
+        setGamesCount(data.count);
+        setGames(data.results);
+        setLoading(false);
+      });
       setCurrentGamesPage(page);
     },
     [setCurrentGamesPage]
@@ -96,6 +80,12 @@ function App() {
 
   const handleSearch = useCallback(
     (searchQuery) => {
+      setLoading(true);
+      getPaginatedGames(1, 8, searchQuery).then((data) => {
+        setGamesCount(data.count);
+        setGames(data.results);
+        setLoading(false);
+      });
       setGameSearch(searchQuery);
       setCurrentGamesPage(1);
     },
@@ -103,11 +93,11 @@ function App() {
   );
 
   return (
-    <div className='App'>
+    <div className="App">
       <>
         <Navbar
           loggedInUser={user}
-          onSignOut={handleLogout}
+          onSignOut={logOut}
           handleClick={handleClick}
           currentPage={currentPage}
         />
@@ -118,8 +108,9 @@ function App() {
             (currentPage === 'games' && (
               <>
                 <SearchBar onSubmitSearch={handleSearch} />
+                {error ? <div className="error">{error}</div> : null}
                 {loading ? (
-                  <HashLoader color='#fb8500' />
+                  <HashLoader color="#fb8500" />
                 ) : (
                   <GameCardsGrid
                     handleGameSelect={handleGameSelect}
@@ -128,7 +119,7 @@ function App() {
                 )}
                 <Pagination
                   totalItems={gamesCount}
-                  pageSize={8}
+                  pageSize={8000}
                   currentPage={currentGamesPage}
                   onPageChange={handlePageChange}
                 />

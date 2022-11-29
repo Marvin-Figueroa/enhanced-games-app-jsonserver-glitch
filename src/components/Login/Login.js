@@ -62,21 +62,21 @@ const Login = ({ currentUser, onLogin }) => {
   // }
 
   return (
-    <form onSubmit={handleLogin} className='form'>
-      <h1 className='form__title'>Sign In</h1>
+    <form onSubmit={handleLogin} className="form">
+      <h1 className="form__title">Sign In</h1>
       {!currentUser && hasSubmitted && (
-        <p className='form-login-error'>Wrong username or password</p>
+        <p className="form-login-error">Wrong username or password</p>
       )}
-      <div className='form-control'>
-        <label className='form__label' htmlFor='username'>
+      <div className="form-control">
+        <label className="form__label" htmlFor="username">
           Username
         </label>
         <input
-          type='text'
-          name='username'
-          id='username'
-          className='form__input'
-          placeholder='Enter your username'
+          type="text"
+          name="username"
+          id="username"
+          className="form__input"
+          placeholder="Enter your username"
           onChange={handleChange}
           value={user.username}
           ref={usernameRef}
@@ -85,16 +85,16 @@ const Login = ({ currentUser, onLogin }) => {
         />
         {/* <p className='form__input-error'>{formErrors.username}</p> */}
       </div>
-      <div className='form-control'>
-        <label className='form__label' htmlFor='password'>
+      <div className="form-control">
+        <label className="form__label" htmlFor="password">
           Password
         </label>
         <input
-          type='password'
-          name='password'
-          id='password'
-          className='form__input'
-          placeholder='Enter your password'
+          type="password"
+          name="password"
+          id="password"
+          className="form__input"
+          placeholder="Enter your password"
           onChange={handleChange}
           value={user.password}
           maxLength={50}
@@ -102,8 +102,8 @@ const Login = ({ currentUser, onLogin }) => {
         />
         {/* <p className='form__input-error'>{formErrors.password}</p> */}
       </div>
-      <div className='form-control'>
-        <button className='form__submit'>Sign In</button>
+      <div className="form-control">
+        <button className="form__submit">Sign In</button>
       </div>
     </form>
   );

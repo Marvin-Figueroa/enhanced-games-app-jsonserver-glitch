@@ -5,9 +5,9 @@ import PropTypes from 'prop-types';
 
 const Rating = ({ rating = 0, maxRating = 5 }) => {
   return (
-    <div className='rating'>
+    <div className="rating">
       <AiFillStar />
-      <p className='rating__number'>
+      <p className="rating__number">
         {rating} / {maxRating}
       </p>
     </div>

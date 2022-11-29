@@ -3,10 +3,11 @@ import './Comment.scss';
 import PropTypes from 'prop-types';
 
 const Comment = ({ comment }) => {
+  console.log(comment);
   return (
-    <div className='comment'>
-      <span className='comment__user'>{comment.user}</span>
-      <p className='comment__text'>{comment.comment}</p>
+    <div className="comment">
+      <span className="comment__user">{comment.user}</span>
+      <p className="comment__text">{comment.comment}</p>
     </div>
   );
 };

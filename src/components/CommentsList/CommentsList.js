@@ -8,6 +8,7 @@ import { getUsers } from '../../services/users';
 
 const CommentsList = ({ gameId, user }) => {
   const [comments, setComments] = useState([]);
+  const [formattedComments, setFormattedComments] = useState([]);
   const [users, setUsers] = useState([]);
   const [newCommentText, setNewCommentText] = useState('');
 
@@ -44,8 +45,7 @@ const CommentsList = ({ gameId, user }) => {
         user: `${userObj?.name} ${userObj?.lastName}`,
       };
     });
-
-    setComments(populatedCommentsUser);
+    setFormattedComments(populatedCommentsUser);
   }
 
   function handleNewComment(e) {
@@ -64,7 +64,7 @@ const CommentsList = ({ gameId, user }) => {
     createComment(newComment)
       .then((response) => response.json())
       .then((createdComment) => {
-        setComments((prevComments) => [
+        setFormattedComments((prevComments) => [
           ...prevComments,
           { ...createdComment, user: `${user.name} ${user.lastName}` },
         ]);
@@ -74,39 +74,41 @@ const CommentsList = ({ gameId, user }) => {
   }
 
   return (
-    <div className='comments'>
-      <p className='comments_label'>All comments ({comments?.length})</p>
+    <div className="comments">
+      <p className="comments_label">All comments ({comments?.length})</p>
       {!user && (
-        <p className='comments_label-add-comment'>
+        <p className="comments_label-add-comment">
           To add a comment you have to be logged in!
         </p>
       )}
       {user && (
         <form
           onSubmit={handleSubmit}
-          id='comments__new-comment'
-          className='comments__new-comment'>
-          <span className='new-comment-author'>
+          id="comments__new-comment"
+          className="comments__new-comment"
+        >
+          <span className="new-comment-author">
             {user.name + ' ' + user.lastName}
           </span>
           <textarea
             value={newCommentText}
             onChange={handleNewComment}
-            className='new-comment__text'
-            name='new-comment'
-            id='new-comment'
-            placeholder='Enter your comment...'
+            className="new-comment__text"
+            name="new-comment"
+            id="new-comment"
+            placeholder="Enter your comment..."
           />
           <button
-            className='new-comment__submit'
-            disabled={newCommentText.trim() === ''}>
+            className="new-comment__submit"
+            disabled={newCommentText.trim() === ''}
+          >
             Add comment
           </button>
         </form>
       )}
 
-      <div className='comments__container'>
-        {comments?.map((comment) => (
+      <div className="comments__container">
+        {formattedComments?.map((comment) => (
           <Comment key={comment.id} comment={comment} />
         ))}
       </div>
