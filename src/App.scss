@@ -17,3 +17,9 @@
     min-height: 100vh;
   }
 }
+
+@media screen and (max-width: 650px) {
+  .App {
+    grid-template-rows: 20vh 1fr 10vh;
+  }
+}
