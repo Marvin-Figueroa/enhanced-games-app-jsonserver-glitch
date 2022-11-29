@@ -1,3 +1,4 @@
+import React from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import './Pagination.scss';
 import PropTypes from 'prop-types';
@@ -10,7 +11,6 @@ const Pagination = ({
   siblingCount = 1,
   currentPage,
 }) => {
-  console.log('Pagination component was rendered!!!');
   const paginationRange = usePagination({
     currentPage,
     totalItems,
@@ -88,4 +88,4 @@ Pagination.propTypes = {
   siblingCount: PropTypes.number,
 };
 
-export default Pagination;
+export default React.memo(Pagination);
