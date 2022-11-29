@@ -1,6 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
-
-import HttpClient from './services/http';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import './App.scss';
 
@@ -10,98 +8,139 @@ import Footer from './components/Footer/Footer';
 import About from './components/About/About';
 import GameDetails from './components/GameDetails/GameDetails';
 import Pagination from './components/Pagination/Pagination';
+import Login from './components/Login/Login';
+import SearchBar from './components/SearchBar/SearchBar';
 
 import HashLoader from 'react-spinners/HashLoader';
 
-const apiUrl = process.env.REACT_APP_API_BASE_URL;
-const resource = '/games?page=1&page_size=8&key=';
-// const resource = '/games?_page=1&_limit=8&key=';
-const apiKey = process.env.REACT_APP_API_KEY;
-// const fullUrl = apiUrl + resource + apiKey;
-
-const http = new HttpClient();
-
-// const http = new HttpClient('https://plume-gelatinous-asp.glitch.me');
+import loginService from './services/login';
+import { getPaginatedGames } from './services/games';
 
 function App() {
-  const gamesCount = useRef();
   const [games, setGames] = useState([]);
-  // const [gamesCount, setGamesCount] = useState(0);
+  const [gamesCount, setGamesCount] = useState(0);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState('games');
   const [selectedGame, setSelectedGame] = useState(null);
-  const [currGamesPage, setCurrGamesPage] = useState(1);
+  const [currentGamesPage, setCurrentGamesPage] = useState(1);
+  const [user, setUser] = useState(null);
+  const [gameSearch, setGameSearch] = useState('');
 
   useEffect(() => {
-    getGames();
+    setLoading(true);
+    getPaginatedGames().then((data) => {
+      setGamesCount(data.count);
+      setGames(data.results);
+      setLoading(false);
+      setUser(JSON.parse(window.localStorage.getItem('user')));
+    });
   }, []);
 
   useEffect(() => {
-    getPaginatedGames(currGamesPage);
-  }, [currGamesPage]);
-
-  async function getGames() {
     setLoading(true);
-    const gamesResult = await http.get(apiUrl + resource + apiKey);
-    // console.log(http.baseURL);
-    // console.log(resource + apiKey);
+    getPaginatedGames(currentGamesPage, 8, gameSearch).then((data) => {
+      setGamesCount(data.count);
+      setGames(data.results);
+      setLoading(false);
+    });
+  }, [currentGamesPage]);
 
-    gamesCount.current = gamesResult.count;
-    // const gamesList = await res.json();
+  useEffect(() => {
+    getPaginatedGames(1, 8, gameSearch).then((data) => {
+      setGamesCount(data.count);
+      setGames(data.results);
+    });
+  }, [gameSearch]);
 
-    setGames(gamesResult.results);
-    setLoading(false);
+  async function handleLogin(credentials) {
+    try {
+      const user = await loginService.login(credentials);
+
+      if (user) {
+        setUser(user);
+        window.localStorage.setItem('user', JSON.stringify(user));
+        setCurrentPage('games');
+      }
+    } catch (error) {
+      // console.log(error);
+    }
   }
 
-  function handleClick(currentPage) {
-    setCurrentPage(currentPage);
-  }
+  const handleLogout = useCallback(() => {
+    setUser(null);
+    window.localStorage.removeItem('user');
+  }, [setUser]);
 
-  function handleGameSelect(id) {
-    const game = games.find((game) => Number(game.id) === Number(id));
-    setSelectedGame(game.id);
-    setCurrentPage('game');
-  }
+  const handleClick = useCallback(
+    (currentPage) => {
+      setCurrentPage(currentPage);
+    },
+    [setCurrentPage]
+  );
 
-  function handlePageChange(page) {
-    setCurrGamesPage(page);
-  }
+  const handleGameSelect = useCallback(
+    (id) => {
+      const game = games.find((game) => Number(game.id) === Number(id));
+      setSelectedGame(game);
+      setCurrentPage('game');
+    },
+    [games]
+  );
 
-  async function getPaginatedGames(page) {
-    const nextGames = await http.get(
-      apiUrl + `/games?page=${page}&page_size=8&key=` + apiKey
-    );
-    setGames(nextGames.results);
-  }
+  const handlePageChange = useCallback(
+    (page) => {
+      setCurrentGamesPage(page);
+    },
+    [setCurrentGamesPage]
+  );
+
+  const handleSearch = useCallback(
+    (searchQuery) => {
+      setGameSearch(searchQuery);
+      setCurrentGamesPage(1);
+    },
+    [setGameSearch, setCurrentGamesPage]
+  );
 
   return (
     <div className='App'>
-      {loading ? (
-        <HashLoader color='#fb8500' />
-      ) : (
-        <>
-          <Navbar handleClick={handleClick} currentPage={currentPage} />
-          <main>
-            {(currentPage === 'games' && (
-              <GameCardsGrid
-                handleGameSelect={handleGameSelect}
-                games={games}
-              />
+      <>
+        <Navbar
+          loggedInUser={user}
+          onSignOut={handleLogout}
+          handleClick={handleClick}
+          currentPage={currentPage}
+        />
+        <main>
+          {(currentPage === 'login' && (
+            <Login currentUser={user} onLogin={handleLogin} />
+          )) ||
+            (currentPage === 'games' && (
+              <>
+                <SearchBar onSubmitSearch={handleSearch} />
+                {loading ? (
+                  <HashLoader color='#fb8500' />
+                ) : (
+                  <GameCardsGrid
+                    handleGameSelect={handleGameSelect}
+                    games={games}
+                  />
+                )}
+                <Pagination
+                  totalItems={gamesCount}
+                  pageSize={8}
+                  currentPage={currentGamesPage}
+                  onPageChange={handlePageChange}
+                />
+              </>
             )) ||
-              (currentPage === 'about' && <About />) ||
-              (currentPage === 'game' && <GameDetails gameId={selectedGame} />)}
-          </main>
-          {currentPage === 'games' && (
-            <Pagination
-              totalItems={828995}
-              pageSize={8}
-              currentPage={currGamesPage}
-              onPageChange={handlePageChange}
-            />
-          )}
-          <Footer />
-        </>
-      )}
+            (currentPage === 'about' && <About />) ||
+            (currentPage === 'game' && (
+              <GameDetails user={user} gameId={selectedGame.id} />
+            ))}
+        </main>
+        <Footer />
+      </>
     </div>
   );
 }
