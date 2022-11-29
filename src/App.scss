@@ -2,8 +2,18 @@
   width: 90%;
   max-width: 130rem;
   margin: 0 auto;
+  min-height: 100vh;
 
   display: grid;
   place-items: center;
-  height: 100vh;
+  align-items: center;
+  grid-template-rows: 10vh 1fr 10vh;
+
+  main {
+    width: 100%;
+    margin: 0 auto;
+    display: grid;
+    place-items: center;
+    min-height: 100vh;
+  }
 }
