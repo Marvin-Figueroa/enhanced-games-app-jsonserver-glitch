@@ -1,4 +1,4 @@
-@import "../../variables";
+@import '../../variables';
 
 .main-nav {
   margin: 1rem auto;
@@ -6,7 +6,12 @@
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  align-self: flex-start;
+  align-self: center;
+
+  .main-nav__user {
+    color: $secondary-color;
+    font-weight: bold;
+  }
 }
 
 .main-nav__logo {
@@ -50,5 +55,14 @@
 
   &.current {
     color: $accent-color;
+  }
+}
+
+@media screen and (max-width: 650px) {
+  .main-nav {
+    flex-direction: column;
+    gap: 2rem;
+    margin-top: 6rem;
+    margin-bottom: 4rem;
   }
 }
