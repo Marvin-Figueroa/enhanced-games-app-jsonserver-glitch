@@ -1,3 +1,4 @@
+import React from 'react';
 import './About.scss';
 
 const About = () => {
@@ -17,4 +18,4 @@ const About = () => {
   );
 };
 
-export default About;
+export default React.memo(About);
