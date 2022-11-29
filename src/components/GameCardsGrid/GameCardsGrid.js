@@ -1,6 +1,7 @@
-import GameCard from '../GameCard/GameCard';
+import React from 'react';
 import './GameCardsGrid.scss';
 import PropTypes, { object } from 'prop-types';
+import GameCard from '../GameCard/GameCard';
 
 const GameCardsGrid = ({ games, handleGameSelect }) => {
   return (
@@ -21,4 +22,4 @@ GameCardsGrid.propTypes = {
   handleGameSelect: PropTypes.func.isRequired,
 };
 
-export default GameCardsGrid;
+export default React.memo(GameCardsGrid);
